@@ -1,12 +1,18 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
+import { Password } from '../utils/password'
 
 interface UserAttrs {
   email: string
   password: string
 }
 
-interface UserModel extends mongoose.Model<any> {
-  build(attrs: UserAttrs): any
+interface UserModel extends Model<any> {
+  build(attrs: UserAttrs): UserDoc
+}
+
+interface UserDoc extends Document {
+  email: string
+  password: string
 }
 
 const userSchema = new Schema({
@@ -14,15 +20,20 @@ const userSchema = new Schema({
   password: { type: String, required: true, unique: false },
 })
 
-userSchema.statics.build = (attrs: UserAttrs): mongoose.Document<UserAttrs, {}> => {
+// Use the function key word for correct context of 'this'
+userSchema.pre('save', async function (done) {
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'))
+    this.set('password', hashed)
+  }
+
+  done()
+})
+
+userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs)
 }
 
-const User = mongoose.model<any, UserModel>('User', userSchema)
-
-User.build({
-  email: 'ee',
-  password: 'eee',
-})
+const User = mongoose.model<UserDoc, UserModel>('User', userSchema)
 
 export { User }
