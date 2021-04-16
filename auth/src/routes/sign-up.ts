@@ -1,9 +1,10 @@
+import { JwtManager } from './../utils/jwt-manager'
+
 import { BadRequestError } from './../errors/bad-request-error'
 import { Router, Request, Response } from 'express'
-import { body, Result, validationResult, ValidationError } from 'express-validator'
+import { body } from 'express-validator'
 import { User } from '../models/user'
-import { RequestValidationError } from '../errors/request-validation-error'
-import { DatabaseConnectionError } from '../errors/database-connection-error'
+import { validateRequest } from '../middleware/validate-request'
 
 const router = Router()
 
@@ -12,12 +13,7 @@ const signUpValidation = [
   body('password').trim().isLength({ min: 4, max: 20 }).withMessage('Password must be between 4 and 20 characters.'),
 ]
 
-router.post('/api/users/signUp', signUpValidation, async (req: Request, res: Response) => {
-  const errors: Result<ValidationError> = validationResult(req)
-  if (!errors.isEmpty()) {
-    throw new RequestValidationError(errors.array())
-  }
-
+router.post('/api/users/signUp', signUpValidation, validateRequest, async (req: Request, res: Response) => {
   const { email, password } = req.body
 
   const existingUser = await User.findOne({ email })
@@ -29,6 +25,11 @@ router.post('/api/users/signUp', signUpValidation, async (req: Request, res: Res
   const user = User.build({ email, password })
 
   await user.save()
+
+  // Store it on session object
+  req.session = {
+    jwt: JwtManager.signUserJwt(user),
+  }
 
   return res.status(201).send(user)
 })
