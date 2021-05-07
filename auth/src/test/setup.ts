@@ -22,9 +22,9 @@ beforeAll(async () => {
 
   await mongoose.connect(mongoUri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true
   })
-})
+}, 18000)
 
 // Jest setup hook, runs after each test
 beforeEach(async () => {

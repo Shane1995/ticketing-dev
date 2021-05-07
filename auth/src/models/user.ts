@@ -18,7 +18,7 @@ export interface UserDoc extends Document {
 const userSchema = new Schema(
   {
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, unique: false },
+    password: { type: String, required: true, unique: false }
   },
   {
     toJSON: {
@@ -27,8 +27,8 @@ const userSchema = new Schema(
         delete ret._id
         delete ret.password
       },
-      versionKey: false,
-    },
+      versionKey: false
+    }
   }
 )
 
