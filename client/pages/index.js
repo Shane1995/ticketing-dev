@@ -1,5 +1,16 @@
 const Index = () => {
-  return <h1>landing Page</h1>
+  return (
+    <>
+      <header>
+        <h1>DerivCare</h1>
+        <ul>
+          <li>Home</li>
+          <li>Support</li>
+          <li>Contact</li>
+        </ul>
+      </header>
+    </>
+  )
 }
 
 export default Index
