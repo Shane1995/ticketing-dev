@@ -1,6 +1,7 @@
 import Head from 'next/head'
+import buildClient from '../api/buildClient'
 
-const App = ({ Component, pageProps }) => {
+const AppComponent = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
@@ -19,9 +20,17 @@ const App = ({ Component, pageProps }) => {
           crossorigin='anonymous'
         ></script>
       </Head>
-      <Component {...pageProps} />
+      <div>
+        <h1>Header</h1>
+        <Component {...pageProps} />
+      </div>
     </>
   )
 }
 
-export default App
+AppComponent.getInitialProps = () => {
+  // Returning empty for now.
+  return {}
+}
+
+export default AppComponent
