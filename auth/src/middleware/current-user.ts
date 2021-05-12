@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
+import { JwtManager } from '../utils/jwt-manager'
 
-interface UserPayload {
+export interface UserPayload {
   id: string
   email: string
 }
@@ -20,7 +21,7 @@ export const currentUser = (req: Request, res: Response, next: NextFunction) => 
   }
 
   try {
-    const payload = jwt.verify(req.session.jwt, process.env.JWT_KEY!) as UserPayload
+    const payload = JwtManager.Verify(req.session.jwt)
     req.currentUser = payload
   } catch (err) {}
 
