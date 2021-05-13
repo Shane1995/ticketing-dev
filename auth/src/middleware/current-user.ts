@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
 import { JwtManager } from '../utils/jwt-manager'
 
 export interface UserPayload {
